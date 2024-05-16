@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Location-Based AR</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+
+    <script src="https://aframe.io/releases/1.3.0/aframe.min.js"></script>
+    <script src="https://unpkg.com/aframe-look-at-component@^0.8.0/dist/aframe-look-at-component.min.js"></script>
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    
+    <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/three.js/build/ar-threex-location-only.js'></script>
+    <script type='text/javascript' src='https://raw.githack.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js'></script>
+    <script src="https://cdn.jsdelivr.net/gh/donmccurdy/aframe-extras@v6.1.0/dist/aframe-extras.min.js"></script>
+
+    <link rel="stylesheet" type="text/css" href="./static/css/style.css" />
+</head>
+
+<body>
+<!-- Modals for starting screens, maps and error screens -->
+    <!-- Instuction Screen -->
+    <div id="modalL" class="modal">
+        <!-- Modal content -->
+        <div class ="common-modal-content black-modal-content" onclick="closeModalL()">
+            <span class="closeL common-close-btn">
+                <img src="./static/images/icons/close-red-icon.png" alt="Close Button" class="common-close-img">
+            </span>
+            <img src="./static/images(townhall)/instructionPage/introduction.png" alt="Instruction Page">
+        </div>
+    </div>
+    
+    <!-- Loading everything else -->
+    <div id="compassDiv">
+        <!-- Compass -->
+        <div class="compass">
+            <div class="arrow"></div>
+        </div>
+        <p id="distanceFromTarget" class="uiDisplay"></p>
+
+        <div class="maps" onclick="toggleMModal()">
+            <div class="mapDot" id="mapDot" style="background: url('./static/images/icons/map.png') center no-repeat; background-size: contain;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Map Modal -->
+    <div id="modalMap" class="modal">
+        <!-- Modal content -->
+        <div class ="common-modal-content black-modal-content">
+            <span class="closeM common-close-btn">
+                <img src="./static/images/icons/redCross.png" alt="Close Button" class="common-close-img">
+            </span>
+            <img src="./static/images(townhall)/minimap/map.png" alt="Map">
+        </div>
+    </div>
+    
+    <!-- Location Modal -->
+    <div id="modalE" class="modal">
+        <!-- Modal content -->
+        <div class ="common-modal-content black-modal-content" onclick="closeModalE()">
+            <span class="closeE common-close-btn">
+                <img src="./static/images/icons/close-red-icon.png" alt="Close Button" class="common-close-img">
+            </span>
+            <img src="./static/images(townhall)/warningPages/locationFrame.png" alt="Turn on Location">
+        </div>
+    </div>
+
+    <!-- Outside Modal -->
+    <div id="modalO" class="modal">
+        <!-- Modal content -->
+        <div class ="common-modal-content black-modal-content" onclick="closeModalO()">
+            <span class="closeO common-close-btn">
+                <img src="./static/images/icons/close-red-icon.png" alt="Close Button" class="common-close-img">
+            </span>
+            <img src="./static/images(townhall)/warningPages/outsideFrame.png" alt="Outside Location">
+        </div>
+    </div>
+
+    <div id="moreOptionsDiv" class="moreOptionsDiv">
+        <div class="moreOptions" onclick="toggleCircles()">
+            <div class="threeLines" id="threeLines" style="background: url('./static/images/icons/menu.png') center no-repeat; background-size: contain;"></div>
+            <div id="additionalCircles" class="additionalCircles">
+                <div class="circle bicycleCrossing" onclick="selectRed()">
+                    <img src="./static\images(townhall)/pictureButtons/fireExtinguisher.png" alt="Fire Extinguisher" style="width: 75%; height: 95%; transform: translateX(-5%);">
+                </div>
+                <div class="circle cyclingPath" onclick="selectGreen()">
+                    <img src="./static/images(townhall)/pictureButtons/signage.png" alt="Signage" style="width: 90%; height: 100%; transform: translateX(-5%);">
+                </div>
+                <div class="circle yellowBoxSitting" onclick="selectOrange()">
+                    <img src="./static/images(townhall)/pictureButtons/cone.png" alt="Cone" style="width: 80%; height: 100%; transform: translateX(-10%);">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    <div id="loadingScreen" class="loading-screen" style="display: none;">
+        <div class="spinner"></div>
+        <p>Loading...</p>
+    </div>
+
+    <!-- Modals for each colour  -->
+        <!-- Fire Extinguisher Modal -->
+            <div id="modalRed15" class="modal">
+                <!-- Modal content -->
+                <div class ="common-modal-content" onclick="closeRedModal15()">
+                    <span id = "modalRedClose15" class="close common-close-btn">
+                        <img src="./static/images/icons/close-red-icon.png" alt="Close Button" class="common-close-img">
+                    </span>
+                    <img src="./static/images/townhallModals/fire.png" alt="RedModal">
+                </div>
+            </div>
+        
+        <!-- Helmet Modal -->
+            <div id="modalGreen15" class="modal">
+                <!-- Modal content -->
+                <div class ="common-modal-content" onclick="closeGreenModal15()">
+                    <span id = "modalGreenClose15" class="close common-close-btn">
+                        <img src="./static/images/icons/close-red-icon.png" alt="Close Button" class="common-close-img">
+                    </span>
+                    <img src="./static/images/townhallModals/DE142.png" alt="GreenModal">
+                </div>
+            </div> 
+        <!-- Cone Modal -->
+            <div id="modalOrange15" class="modal">
+                <!-- Modal content -->
+                <div class ="common-modal-content" onclick="closeOrangeModal15()">
+                    <span id = "modalOrangeClose15" class="close common-close-btn">
+                        <img src="./static/images/icons/close-red-icon.png" alt="Close Button" class="common-close-img">
+                    </span>
+                    <img src="./static/images/townhallModals/T123.png" alt="OrangeModal">
+                </div>
+            </div> 
+<!-- End of Modals for Townhall -->
+        <a-scene 
+            vr-mode-ui='enabled: false' arjs='sourceType: webcam; videoTexture: true; debugUIEnabled: false' renderer='antialias: true; alpha: true' device-orientation-permission-ui="enabled: false">
+            <a-camera gps-projected-camera far='100' rotation-reader></a-camera>
+
+            <a-entity id="redOff"></a-entity>
+            <a-entity id="greenOff"></a-entity>
+            <a-entity id="orangeOff"></a-entity>
+        </a-scene>
+
+    </div>
+
+    <!-- Modal Toggling Script -->
+    <script defer>
+        document.addEventListener('DOMContentLoaded', function() {
+            function toggleLModal() {
+                // Get the modal
+                var modalL = document.getElementById("modalL");
+                if (modalL) {
+                    modalL.style.zIndex = "6000";
+                    modalL.style.display = "block";
+                }
+            }
+
+            toggleLModal();
+        });
+    </script>
+
+    <script src="static/JavaScript/index.js"></script>
+</body>
+
+</html>
